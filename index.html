@@ -10,7 +10,7 @@
 
 <link rel="stylesheet" href="mindful-ui.css">
 <script src="mindful-ui.js" data-scene="birds" defer></script>
-</head><body>
+<script>if(new URLSearchParams(location.search).get('showroom')==='1'){const s=document.createElement('style');s.textContent="#panel,#hint,.hidden-controls,.display-toolbar,.display-welcome,.toast,#toast{display:none!important}";document.head.append(s)}</script></head><body>
 <canvas id="sky" aria-label="오른쪽에서 왼쪽으로 날아가는 철새 떼. 화면을 누르고 움직여 무리를 조절할 수 있습니다."></canvas>
 <div id="touch-feedback" aria-hidden="true"></div>
 <div id="hint"><b>F L O C K S</b>오른쪽에서 왼쪽으로, 함께 흐르는 움직임</div>
