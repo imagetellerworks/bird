@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#181a1b"><title>철새의 흐름 · Flocks</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23191d1b'/%3E%3Cpath d='M5 12L16 21L27 12M9 9L16 15L23 9' fill='none' stroke='%23e2e8b9' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+:root{font-family:Arial,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#f5f5f3;background:#c9ccce;font-synthesis:none;color-scheme:dark;--accent:#e2e8b9}*{box-sizing:border-box}body{margin:0;overflow:hidden}button,input,select{font:inherit}button,select{cursor:pointer}button{color:inherit;border:1px solid #ffffff26;background:#ffffff08;border-radius:7px;padding:10px 12px;min-height:40px}button:hover{background:#ffffff18}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:4px}button.active{background:var(--accent);color:#20251b;border-color:var(--accent)}canvas{display:block;width:100vw;height:100dvh;touch-action:none}#panel{position:fixed;top:22px;right:22px;width:310px;max-height:calc(100dvh - 44px);overflow:auto;background:#15191aee;border:1px solid #ffffff18;border-radius:14px;padding:22px;box-shadow:0 12px 60px #0003;backdrop-filter:blur(16px);transition:opacity .2s,transform .2s;scrollbar-width:thin}.panel-hidden #panel{opacity:0;transform:translateX(30px);pointer-events:none}.kicker{font:12px monospace;letter-spacing:.16em;color:#a8ada9;margin:0 0 9px}h1{font-size:24px;letter-spacing:-.04em;font-weight:500;margin:0}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.icon{font-size:19px;width:38px;min-height:38px;padding:4px;background:none}.subtle{color:#aeb4b1;font-size:13px;line-height:1.65;margin:0}.divider{border-top:1px solid #ffffff15;margin:18px 0}.section-label{font-size:12px;letter-spacing:.08em;color:#929c96;margin:0 0 12px}.presets{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.presets button{font-size:14px;padding:9px 4px}.control{margin:16px 0 0}.label-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;margin-bottom:10px;gap:10px}.value{font:13px monospace;color:var(--accent);white-space:nowrap}input[type=range]{width:100%;height:4px;appearance:none;border-radius:4px;background:#56605a;display:block;cursor:pointer;margin:12px 0 18px;accent-color:var(--accent)}input[type=range]::-webkit-slider-thumb{appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);border:2px solid #1b201b}input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid #1b201b}.row{display:flex;gap:6px}.row>*{flex:1;font-size:14px}.control select{width:100%;background:#272d2b;color:#eef0ed;border:1px solid #ffffff20;padding:10px;border-radius:7px;font-size:14px}.footer{display:flex;gap:7px;margin-top:18px}.footer button{flex:1;font-size:14px;padding:9px 6px}.hidden-controls{position:fixed;bottom:max(20px,env(safe-area-inset-bottom));left:22px;display:flex;gap:8px}.hidden-controls button{background:#15191ade;box-shadow:0 3px 15px #0001;font-size:14px;backdrop-filter:blur(12px)}#hint{position:fixed;left:23px;top:24px;font-size:12px;line-height:1.6;letter-spacing:.06em;color:#3339;pointer-events:none}body.dark #hint{color:#ddd7}#hint b{font-weight:400;display:block;margin-bottom:3px;letter-spacing:.14em}.clean #hint{display:none}.clean .hidden-controls{opacity:0;transition:opacity .2s}.clean .hidden-controls:hover,.clean .hidden-controls:focus-within{opacity:1}#error{position:fixed;inset:0;background:#1b2020;display:none;place-content:center;padding:32px;line-height:1.8;text-align:center}details summary{cursor:pointer;font-size:14px;color:#b8c0b9;margin-top:16px}details[open] summary{margin-bottom:16px}#toast{position:fixed;bottom:82px;left:22px;max-width:calc(100vw - 44px);font-size:14px;background:#15191aeb;padding:11px 16px;border-radius:7px;opacity:0;pointer-events:none;transition:opacity .3s}#toast.show{opacity:1}@media(max-width:600px){#panel{width:calc(100vw - 28px);max-width:330px;right:14px;top:14px;max-height:calc(100dvh - 86px);padding:19px}.hidden-controls{left:14px;bottom:max(16px,env(safe-area-inset-bottom))}#hint{left:16px;top:20px}h1{font-size:23px}header{margin-bottom:16px}.control{margin-top:14px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+#touch-feedback{position:fixed;width:80px;height:80px;border:1px solid #252a2c;border-radius:50%;opacity:0;pointer-events:none;transform:translate(-50%,-50%)}body.dark #touch-feedback{border-color:#f4f5f3}</style>
+
+<link rel="stylesheet" href="mindful-ui.css">
+<script src="mindful-ui.js" data-scene="birds" defer></script>
+</head><body>
+<canvas id="sky" aria-label="오른쪽에서 왼쪽으로 날아가는 철새 떼. 화면을 누르고 움직여 무리를 조절할 수 있습니다."></canvas>
+<div id="touch-feedback" aria-hidden="true"></div>
+<div id="hint"><b>F L O C K S</b>오른쪽에서 왼쪽으로, 함께 흐르는 움직임</div>
+<aside id="panel" aria-label="철새 움직임 설정">
+<header><div><p class="kicker">MIGRATION STUDY / 02</p><h1>철새의 흐름</h1></div><button class="icon" id="close" title="패널 숨기기" aria-label="패널 숨기기">×</button></header>
+<p class="section-label">무리의 형태</p><div class="presets"><button data-preset="v" class="active" aria-pressed="true">V자 대열</button><button data-preset="flock" aria-pressed="false">군무</button><button data-preset="ribbon" aria-pressed="false">긴 흐름</button></div>
+<div class="control"><label class="label-row" for="gesture">터치 / 드래그</label><select id="gesture"><option value="scatter">새 떼 흩뜨리기</option><option value="guide">새 떼 유도하기</option><option value="off">끄기</option></select></div>
+<details><summary>터치 반응 조절</summary>
+<div class="control"><label class="label-row" for="touchStrength">터치 강도 <output class="value" id="touchStrength-out"></output></label><input id="touchStrength" type="range" min="0.5" max="3" step="0.05"></div>
+<div class="control"><label class="label-row" for="touchRadius">터치 범위 <output class="value" id="touchRadius-out"></output></label><input id="touchRadius" type="range" min="0.15" max="0.6" step="0.01"></div>
+</details>
+<div class="control"><label class="label-row" for="count">새의 수 <output class="value" id="count-out"></output></label><input id="count" type="range" min="20" max="900" step="10"></div>
+<div class="control"><label class="label-row" for="speed">비행 속도 <output class="value" id="speed-out"></output></label><input id="speed" type="range" min="0.1" max="3" step="0.05"></div>
+<div class="control"><label class="label-row" for="spread">무리의 퍼짐 <output class="value" id="spread-out"></output></label><input id="spread" type="range" min="0.3" max="2.5" step="0.05"></div>
+<div class="control"><label class="label-row" for="cohesion">대열 유지 <output class="value" id="cohesion-out"></output></label><input id="cohesion" type="range" min="0" max="1" step="0.01"></div>
+<div class="control"><label class="label-row" for="chaos">불규칙한 움직임 <output class="value" id="chaos-out"></output></label><input id="chaos" type="range" min="0" max="1" step="0.01"></div>
+<details open><summary>개체별 위글과 딜레이</summary>
+<div class="control"><label class="label-row" for="speedVar">개체별 속도 차이 <output class="value" id="speedVar-out"></output></label><input id="speedVar" type="range" min="0" max="1" step="0.01"></div>
+<div class="control"><label class="label-row" for="wiggle">위글 크기 <output class="value" id="wiggle-out"></output></label><input id="wiggle" type="range" min="0" max="1" step="0.01"></div>
+<div class="control"><label class="label-row" for="wiggleFreq">위글 빈도 <output class="value" id="wiggleFreq-out"></output></label><input id="wiggleFreq" type="range" min="0.1" max="2" step="0.05"></div>
+<div class="control"><label class="label-row" for="delay">반응 딜레이 <output class="value" id="delay-out"></output></label><input id="delay" type="range" min="0" max="2" step="0.05"></div>
+<div class="control"><label class="label-row" for="breath">모임 / 퍼짐의 리듬 <output class="value" id="breath-out"></output></label><input id="breath" type="range" min="0" max="1" step="0.01"></div>
+<div class="control"><label class="label-row" for="flow">흐름의 굽이 <output class="value" id="flow-out"></output></label><input id="flow" type="range" min="0" max="1" step="0.01"></div>
+</details>
+<div class="divider"></div>
+<details><summary>화면과 질감</summary>
+<div class="control"><label class="label-row" for="size">새의 크기 <output class="value" id="size-out"></output></label><input id="size" type="range" min="0.5" max="3" step="0.05"></div>
+<div class="control"><label class="label-row" for="zoom">줌 <output class="value" id="zoom-out"></output></label><input id="zoom" type="range" min="0.4" max="2.5" step="0.05"></div>
+<div class="control"><label class="label-row" for="grain">필름 입자 <output class="value" id="grain-out"></output></label><input id="grain" type="range" min="0" max="1" step="0.01"></div>
+<div class="control"><label class="label-row" for="wind">바람 <output class="value" id="wind-out"></output></label><input id="wind" type="range" min="-1" max="1" step="0.01"></div>
+<div class="control"><label class="label-row" for="skyCycle">하늘 색조합</label><button id="skyCycle" type="button" style="width:100%" title="하늘색 바꾸기">평안</button></div><div class="row"><button id="light" class="active" aria-pressed="true">흰 하늘</button><button id="dark" aria-pressed="false">검은 하늘</button></div>
+</details>
+<div class="footer"><button id="pause">일시정지</button><button id="enter">다시 진입</button></div><div class="footer"><button id="fullscreen">전체화면</button><button id="reset">초기 설정</button></div>
+<p class="subtle" style="margin-top:15px">탭하거나 누른 채 움직여 보세요.<br>두 손가락으로 줌 · H 패널 · Space 정지</p>
+</aside>
+<div class="hidden-controls"><button id="toggle" aria-expanded="true" aria-controls="panel">조작 패널</button><button id="view">영상만 보기</button></div><div id="toast" role="status"></div><div id="error" role="alert"></div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const defaults={count:240,speed:0.75,spread:1,cohesion:0.58,chaos:0.45,speedVar:0.5,wiggle:0.65,wiggleFreq:0.45,delay:0.9,breath:0.65,flow:0.7,touchStrength:1.65,touchRadius:0.36,size:1,zoom:1,grain:0.28,wind:0,preset:'v',gesture:'scatter',dark:false,skyMood:0,skyMode:'mood'};
+let config={...defaults};try{let old=JSON.parse(localStorage.getItem('flocks-settings-v2')||'null');if(!old){const previous=JSON.parse(localStorage.getItem('flocks-settings-v1')||'null');if(previous)old=Object.fromEntries(['count','speed','size','zoom','grain','wind','preset','gesture','dark'].map(k=>[k,previous[k]]))}if(old)Object.keys(defaults).forEach(k=>{if(typeof old[k]===typeof defaults[k])config[k]=old[k]})}catch(e){}
+const ranges=['count','speed','spread','cohesion','chaos','speedVar','wiggle','wiggleFreq','delay','breath','flow','touchStrength','touchRadius','size','zoom','grain','wind'];
+for(const k of ranges){const el=$(k);config[k]=Math.max(Number(el.min),Math.min(Number(el.max),Number.isFinite(config[k])?config[k]:defaults[k]))}
+if(!['v','flock','ribbon'].includes(config.preset))config.preset='v';if(!['scatter','guide','off'].includes(config.gesture))config.gesture='scatter';
+// Fixed sky palettes adapted from Mindful Day's analogous, complementary,
+// triadic and soft/deep tone families. Colors are ordered top → middle → bottom.
+const SKY_MOODS=[
+  {ko:'평안',en:'Peace',colors:['#8CAACD','#C9CCE3','#F1DBCD']},
+  {ko:'갈등',en:'Conflict',colors:['#233B72','#78628E','#E38C72']},
+  {ko:'싱그러움',en:'Freshness',colors:['#429B89','#A4D4A7','#F0E8A3']},
+  {ko:'설렘',en:'Flutter',colors:['#B498CC','#E8B4CE','#FFD7B4']},
+  {ko:'희망',en:'Hope',colors:['#5AABD0','#BDE2DA','#FFF0B4']},
+  {ko:'그리움',en:'Longing',colors:['#655F91','#AD96B0','#D9B7A5']},
+  {ko:'열정',en:'Passion',colors:['#682F54','#CC5C67','#F5AC6E']},
+  {ko:'고요',en:'Stillness',colors:['#172D48','#386477','#8CB6B5']},
+  {ko:'위로',en:'Comfort',colors:['#8EAAA0','#D0D4B6','#F2DEC0']},
+  {ko:'몽상',en:'Reverie',colors:['#504080','#9B8AC3','#E4C3DA']}
+].map(m=>({...m,rgb:m.colors.map(h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255))}));
+const SKY_LIGHT=['#D5D8DA','#E5E6E6','#CED1D3'].map(h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255));
+const SKY_DARK=['#0C1017','#161B23','#232A32'].map(h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255));
+config.skyMood=Number.isInteger(config.skyMood)?((config.skyMood%SKY_MOODS.length)+SKY_MOODS.length)%SKY_MOODS.length:0;
+if(!['mood','light','dark'].includes(config.skyMode))config.skyMode='mood';
+function skyTarget(){return config.skyMode==='light'?SKY_LIGHT:config.skyMode==='dark'?SKY_DARK:SKY_MOODS[config.skyMood].rgb;}
+const skyReducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+let liveSky=skyTarget().map(c=>c.slice()),skyLast=performance.now();
+function skyUniforms(program){for(let i=0;i<3;i++)gl.uniform3fv(gl.getUniformLocation(program,['skyTop','skyMid','skyBottom'][i]),liveSky[i]);}
+const canvas=$('sky');let gl=canvas.getContext('webgl',{alpha:false,antialias:true,preserveDrawingBuffer:false});
+let W=innerWidth,H=innerHeight,aspect=W/H,paused=matchMedia('(prefers-reduced-motion: reduce)').matches,time=0,birds=[],groups=[],last=0,contextLost=false,accumulator=0;
+const pointer={x:0,y:0,vx:0,vy:0,active:false,at:0},touches=new Map();let pinchDistance=0,pinchZoom=1,touchFields=[];
+const SCATTER_TOUCH_SCALE=0.2; // Keep guiding unchanged; soften scatter taps and drag trails.
+function interactionRadius(){return config.touchRadius*Math.min(W,H)/H/config.zoom}
+function clearInteraction(){pointer.active=false;pointer.vx=0;pointer.vy=0;touchFields=[];touches.clear();for(const b of birds)b.react=0}
+function addTouchField(kind){if(config.gesture==='off')return;touchFields.push({x:pointer.x,y:pointer.y,vx:pointer.vx,vy:pointer.vy,born:time,mode:config.gesture,kind,radius:interactionRadius(),strength:config.touchStrength});if(touchFields.length>12)touchFields.shift()}
+function touchImpulse(){if(config.gesture==='off')return;const radius=interactionRadius()*(config.gesture==='guide'?1.85:1);for(const b of birds){let dx=b.x-pointer.x,dy=b.y-pointer.y,d=Math.hypot(dx,dy);if(d>=radius)continue;const falloff=Math.pow(1-d/radius,.65),nx=d>.001?dx/d:Math.cos(b.phase),ny=d>.001?dy/d:Math.sin(b.phase),kick=config.touchStrength*falloff*(config.gesture==='scatter'?SCATTER_TOUCH_SCALE:1);b.react=Math.max(b.react||0,falloff*(config.gesture==='scatter'?SCATTER_TOUCH_SCALE:1));if(config.gesture==='scatter'){b.vx+=nx*.42*kick;b.vy+=ny*.42*kick}else{const blend=clamp(kick*.48,0,.9);b.vx=mix(b.vx,-nx*.36*config.touchStrength,blend);b.vy=mix(b.vy,-ny*.36*config.touchStrength,blend)}b.ax=0;b.ay=0}addTouchField('tap')}
+function movePointer(e){const p=point(e),elapsed=Math.max((performance.now()-pointer.at)/1000,.008),vx=(p.x-pointer.x)/elapsed,vy=(p.y-pointer.y)/elapsed,length=Math.hypot(vx,vy),limit=2/config.zoom;pointer.vx=mix(pointer.vx,vx*Math.min(1,limit/Math.max(length,.001)),.65);pointer.vy=mix(pointer.vy,vy*Math.min(1,limit/Math.max(length,.001)),.65);Object.assign(pointer,p);pointer.at=performance.now();pointer.active=true;const last=touchFields[touchFields.length-1];if(!last||Math.hypot(last.x-pointer.x,last.y-pointer.y)>interactionRadius()*.10||time-last.born>.07)addTouchField('trail')}
+function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
+function save(){try{localStorage.setItem('flocks-settings-v2',JSON.stringify(config))}catch(e){}}
+function sync(){for(const k of ranges){$(k).value=config[k];let out=k==='count'?config[k]+' 마리':k==='delay'?config[k].toFixed(2)+' s':k==='wiggleFreq'?config[k].toFixed(2)+' Hz':['speed','size','zoom','touchStrength'].includes(k)?config[k].toFixed(2)+'×':Math.round(config[k]*100)+'%';$(k+'-out').textContent=out}document.querySelectorAll('[data-preset]').forEach(b=>{b.classList.toggle('active',b.dataset.preset===config.preset);b.setAttribute('aria-pressed',b.dataset.preset===config.preset)});$('gesture').value=config.gesture;const top=skyTarget()[0];config.dark=(top[0]*.2126+top[1]*.7152+top[2]*.0722)<.52;document.body.classList.toggle('dark',config.dark);for(const id of ['light','dark']){$(id).classList.toggle('active',config.skyMode===id);$(id).setAttribute('aria-pressed',config.skyMode===id)}$('skyCycle').textContent=SKY_MOODS[config.skyMood].ko;$('skyCycle').style.setProperty('--sky-swatch','linear-gradient(180deg,'+SKY_MOODS[config.skyMood].colors.join(',')+')');$('skyCycle').setAttribute('aria-pressed',String(config.skyMode==='mood'));$('pause').textContent=paused?'재생':'일시정지'}
+function panel(show){document.body.classList.toggle('panel-hidden',!show);$('toggle').setAttribute('aria-expanded',show);$('panel').inert=!show}
+function resize(){const bounds=canvas.getBoundingClientRect();W=Math.max(1,bounds.width);H=Math.max(1,bounds.height);aspect=W/H;let dpr=Math.min(devicePixelRatio||1,2),max=gl?gl.getParameter(gl.MAX_VIEWPORT_DIMS):[8192,8192];dpr=Math.min(dpr,max[0]/W,max[1]/H);canvas.width=Math.floor(W*dpr);canvas.height=Math.floor(H*dpr);if(gl)gl.viewport(0,0,canvas.width,canvas.height)}
+function rand(a,b){return a+Math.random()*(b-a)}
+// Motion references: Reynolds' local steering rules, the Three.js GPGPU birds
+// example, Adobe's seeded wiggle / valueAtTime delay, and CONNECTIONS' flow field.
+// This is an artistic migration model, not a biological flight reconstruction.
+const HISTORY=256,STEP=1/60;let historyHead=0,nextVelocity=new Float32Array(0);
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function mix(a,b,t){return a+(b-a)*t}
+function smooth(v){return v*v*v*(v*(v*6-15)+10)}
+function hash(n,seed){let h=Math.imul(n^seed,374761393);h=Math.imul(h^(h>>>13),1274126177);return ((h^(h>>>16))>>>0)/4294967295*2-1}
+function noise1(x,seed){let n=Math.floor(x);return mix(hash(n,seed),hash(n+1,seed),smooth(x-n))}
+function wiggleNoise(t,seed){return (noise1(t,seed)+.45*noise1(t*2.07,seed+103)+.20*noise1(t*4.13,seed+209))/1.65}
+function noise2(x,y,seed){let ix=Math.floor(x),iy=Math.floor(y),fx=smooth(x-ix),fy=smooth(y-iy);return mix(mix(hash(ix+iy*131,seed),hash(ix+1+iy*131,seed),fx),mix(hash(ix+(iy+1)*131,seed),hash(ix+1+(iy+1)*131,seed),fx),fy)}
+function flowField(x,y,t){const qx=x*3.1+t*.11,qy=y*3.1-t*.15,e=.035;return{x:(noise2(qx,qy+e,9127)-noise2(qx,qy-e,9127))/(2*e),y:-(noise2(qx+e,qy,9127)-noise2(qx-e,qy,9127))/(2*e)}}
+function makeHistory(o){o.hx=new Float32Array(HISTORY);o.hy=new Float32Array(HISTORY);o.hvx=new Float32Array(HISTORY);o.hvy=new Float32Array(HISTORY);for(let k=0;k<HISTORY;k++){let age=((historyHead-k+HISTORY)%HISTORY)*STEP;o.hx[k]=o.x-o.vx*age;o.hy[k]=o.y-o.vy*age;o.hvx[k]=o.vx;o.hvy[k]=o.vy}}
+function sampleHistory(o,seconds){let frames=clamp(seconds/STEP,0,HISTORY-2),n=Math.floor(frames),fraction=frames-n,a=(historyHead-n+HISTORY)%HISTORY,z=(a-1+HISTORY)%HISTORY;return{x:mix(o.hx[a],o.hx[z],fraction),y:mix(o.hy[a],o.hy[z],fraction),vx:mix(o.hvx[a],o.hvx[z],fraction),vy:mix(o.hvy[a],o.hvy[z],fraction)}}
+function delayFor(b){const order=b.slot/Math.max(1,groups[b.g].count-1);return config.delay*(.08+b.lag*.42+order*.5)}
+// Each passing flock has its own proportions and flight rhythm.
+// Profiles change only after the entire flock has left the screen.
+function varyGroup(g){
+  Object.assign(g,{seed:Math.floor(rand(100,1000000)),phase:rand(0,Math.PI*2),speed:rand(.58,1.48),
+    stretch:rand(.65,1.6),opening:rand(.42,1.5),tilt:rand(-.55,.55),bend:rand(-.65,.65),
+    asymmetry:rand(.45,1.55),looseness:rand(.08,.85),spacing:rand(.75,1.3),
+    centerY:0,bearing:rand(-.24,.24),tempo:rand(.65,1.4),baseY:rand(-.23,.23)/config.zoom});
+  g.y=g.baseY;g.vx=-.125*config.speed*g.speed;g.vy=g.vx*g.bearing;
+}
+function placeGroup(g,entryEdge=null){
+  makeHistory(g);
+  for(const i of g.members){
+    const b=birds[i];
+    Object.assign(b,{ox:rand(-1,1),oy:rand(-1,1),lag:rand(0,1),speedBias:rand(-1,1),react:0,ax:0,ay:0,vx:g.vx,vy:g.vy});
+    const p=target(b,time);b.x=p.x+rand(-.009,.009);b.y=p.y+rand(-.009,.009);
+  }
+  // Fit the new formation vertically, including on a zoomed mobile canvas.
+  const members=g.members.map(i=>birds[i]);
+  const low=Math.min(...members.map(b=>b.y)),high=Math.max(...members.map(b=>b.y));
+  const fit=Math.min(1,(.68/config.zoom)/Math.max(.001,high-low));
+  g.verticalFit=fit;
+  const center=(low+high)/2,shiftY=clamp(g.baseY,-.4/config.zoom+(high-low)*fit/2,.4/config.zoom-(high-low)*fit/2)-center;
+  g.centerY=center-g.y;
+  for(const b of members)b.y=center+(b.y-center)*fit+shiftY;
+  g.y=g.baseY=members.reduce((sum,b)=>sum+b.y,0)/members.length;
+  if(entryEdge!==null){
+    const shift=entryEdge+rand(.10,.38)*Math.min(1,aspect)-Math.min(...members.map(b=>b.x));
+    g.x+=shift;for(const b of members)b.x+=shift;
+  }
+  makeHistory(g);
+  for(const b of members){b.prevX=b.x;b.prevY=b.y;b.heading=Math.atan2(b.vy,b.vx);makeHistory(b);}
+}
+function resetBirds(entry=false){
+  clearInteraction();groups=[];birds=[];historyHead=0;accumulator=0;
+  const n=Math.max(1,Math.min(12,Math.round(config.count/rand(48,84))));
+  const weights=Array.from({length:n},()=>rand(.3,1.7)**2),total=weights.reduce((a,b)=>a+b,0);
+  const counts=Array(n).fill(Math.min(4,Math.floor(config.count/n)));
+  for(let left=config.count-counts.reduce((a,b)=>a+b,0);left>0;left--){
+    let pick=rand(0,total),j=0;while(j<n-1&&pick>weights[j])pick-=weights[j++];counts[j]++;
+  }
+  for(let j=0;j<n;j++){
+    const g={x:entry?aspect/(2*config.zoom)+j*rand(.18,.45):(-.35+(j+rand(-.3,.3))/n)*aspect/config.zoom,
+      count:counts[j],members:[],verticalFit:1};
+    varyGroup(g);groups.push(g);
+    for(let slot=0;slot<g.count;slot++){
+      const b={g:j,slot,seed:Math.floor(rand(100,1000000)),phase:rand(0,Math.PI*2),depth:rand(.65,1.25),
+        response:rand(.16,.48),tempo:rand(.72,1.35),x:0,y:0,vx:g.vx,vy:g.vy,wingPhase:rand(0,Math.PI*2),flapRate:rand(6,10),flapEnvelope:1};
+      g.members.push(birds.length);birds.push(b);
+    }
+    placeGroup(g,entry?g.x:null);
+  }
+  nextVelocity=new Float32Array(birds.length*2);
+}
+function target(b,t){
+  const g=groups[b.g],delay=delayFor(b),p=sampleHistory(g,delay),local=t-delay;
+  const breathing=1+config.breath*(wiggleNoise(local*.17*g.tempo,g.seed+317)*.40+Math.sin(local*.83*g.tempo+g.phase)*.13);
+  const individual=1+config.breath*wiggleNoise(local*.3,b.seed+85)*.20,s=config.spread*breathing*individual*g.spacing;
+  const length=Math.sqrt(g.count/65),u=b.slot/Math.max(1,g.count-1),side=b.slot%2?1:-1;
+  let x,y;
+  if(config.preset==='v'){
+    const rank=Math.ceil(b.slot/2)/Math.max(1,Math.ceil((g.count-1)/2));
+    const arm=(side>0?g.asymmetry:2-g.asymmetry)*(1+wiggleNoise(local*.18,g.seed+(side===1?431:987))*config.chaos*.35);
+    x=rank*.30*length*g.stretch*s;
+    y=(side*rank*.19*g.opening*arm+Math.sin(rank*Math.PI)*g.bend*.14)*length*s;
+    const loosen=((1-config.cohesion)*.055+g.looseness*.07)*s;
+    x+=b.ox*loosen;y+=b.oy*loosen;
+    if(b.slot===0){x=0;y=0;}
+  }else if(config.preset==='ribbon'){
+    x=u*.58*length*g.stretch*s;
+    y=(wiggleNoise(local*.19*g.tempo-u*3,g.seed+717)*.09*g.opening+Math.sin(u*Math.PI)*g.bend*.15+b.oy*(.015+g.looseness*.05))*s;
+  }else{
+    x=b.ox*.20*length*g.stretch*s;
+    y=(b.oy*.13*g.opening+Math.sin(b.ox*Math.PI)*g.bend*.09)*length*s;
+  }
+  const wtime=local*config.wiggleFreq*b.tempo;
+  x+=wiggleNoise(wtime,b.seed)*config.wiggle*.046;y+=wiggleNoise(wtime,b.seed+431)*config.wiggle*.065;
+  const angle=clamp(Math.atan2(p.vy,-p.vx)+g.tilt+wiggleNoise(local*.09*g.tempo,g.seed+807)*config.flow*.25,-.95,.95),cs=Math.cos(angle),sn=Math.sin(angle);
+  return{x:p.x+x*cs+y*sn,y:p.y+(-x*sn+y*cs-g.centerY)*g.verticalFit,vx:p.vx,vy:p.vy};
+}
+function recycleGroup(g,minX,maxX){
+  if(g.members.some(i=>birds[i].x>=minX-.18))return;
+  varyGroup(g);g.verticalFit=1;g.x=maxX;
+  placeGroup(g,maxX);
+}
+function update(dt){time+=dt;touchFields=touchFields.filter(f=>time-f.born<1.25);if(!pointer.active){pointer.vx*=Math.exp(-dt*8);pointer.vy*=Math.exp(-dt*8)}const minX=-aspect/(2*config.zoom),maxX=aspect/(2*config.zoom);for(const g of groups){recycleGroup(g,minX,maxX);const drift=wiggleNoise(time*.13*g.tempo,g.seed),rate=1+wiggleNoise(time*.22*g.tempo,g.seed+29)*config.speedVar*.45,base=.125*config.speed*g.speed*rate,curve=g.bearing+drift*config.flow*.8,desiredY=g.baseY+(wiggleNoise(time*.08*g.tempo,g.seed+351)*config.flow*.16+config.wind*.10)/config.zoom;g.vx=-base*Math.cos(curve);g.vy=mix(g.vy,-base*Math.sin(curve)+(desiredY-g.y)*.4,1-Math.exp(-dt*1.8));g.x+=g.vx*dt;g.y+=g.vy*dt}
+const radius=.115,grid=new Map();for(let i=0;i<birds.length;i++){const b=birds[i];b.cx=Math.floor(b.x/radius);b.cy=Math.floor(b.y/radius);const key=b.cx+','+b.cy;if(!grid.has(key))grid.set(key,[]);grid.get(key).push(i)}
+for(let i=0;i<birds.length;i++){const b=birds[i],delay=delayFor(b),local=time-delay,dest=target(b,time),g=groups[b.g];let ax=0,ay=0,sx=0,sy=0,neighbors=[];const sep=.012*(.6+config.spread*.5)*(1+config.breath*wiggleNoise(local*.17,g.seed+317)*.28);
+for(let xx=-1;xx<=1;xx++)for(let yy=-1;yy<=1;yy++){const near=grid.get((b.cx+xx)+','+(b.cy+yy));if(!near)continue;for(const j of near){if(j===i)continue;const o=birds[j],dx=b.x-o.x,dy=b.y-o.y,d2=dx*dx+dy*dy;if(d2<sep*sep){let d=Math.sqrt(d2);if(d<.00001){sx+=Math.cos(b.phase)*.08;sy+=Math.sin(b.phase)*.08}else{const f=Math.pow(1-d/sep,2)*.11;sx+=dx/d*f;sy+=dy/d*f}}if(o.g===b.g&&d2<radius*radius&&((o.x-b.x)*b.vx+(o.y-b.y)*b.vy)>-Math.sqrt(d2)*Math.hypot(b.vx,b.vy)*.55)neighbors.push({j,d2})}}
+neighbors.sort((a,z)=>a.d2-z.d2);if(neighbors.length>7)neighbors.length=7;let avx=0,avy=0,px=0,py=0;for(const n of neighbors){const p=sampleHistory(birds[n.j],delay*.65);avx+=p.vx;avy+=p.vy;px+=p.x+p.vx*delay*.4;py+=p.y+p.vy*delay*.4}const m=neighbors.length,alignment=.65+config.cohesion*1.3;if(m){ax+=(avx/m-b.vx)*alignment;ay+=(avy/m-b.vy)*alignment;ax+=(px/m-b.x)*(.2+config.cohesion*.45);ay+=(py/m-b.y)*(.2+config.cohesion*.45)}
+// Relaxed formation influence; it is a moving preference rather than a pinned slot.
+const shape=config.preset==='flock'?.28:.5,hold=shape*(.25+config.cohesion*1.5);ax+=(dest.x-b.x)*hold;ay+=(dest.y-b.y)*hold;
+const speedOffset=config.speedVar*(b.speedBias*.22+wiggleNoise(local*.48*b.tempo,b.seed+937)*.42),desiredSpeed=.125*config.speed*g.speed*(1+speedOffset),leadMagnitude=Math.hypot(dest.vx,dest.vy)||.001;ax+=(dest.vx/leadMagnitude*desiredSpeed-b.vx)*1.25;ay+=(dest.vy/leadMagnitude*desiredSpeed-b.vy)*.8;
+const field=flowField(b.x,b.y,local),wander=config.chaos*(.018+config.flow*.024);ax+=field.x*wander;ay+=field.y*wander;ax+=wiggleNoise(local*config.wiggleFreq*b.tempo,b.seed)*config.wiggle*.045;ay+=wiggleNoise(local*config.wiggleFreq*b.tempo,b.seed+431)*config.wiggle*.070;ax+=sx;ay+=sy;
+b.react=(b.react||0)*Math.exp(-dt/1.1);let tax=0,tay=0,touchWeight=0;
+function affectTouch(f,decay){const radius=f.radius*(f.mode==='guide'?1.85:1),dx=b.x-f.x,dy=b.y-f.y,d=Math.hypot(dx,dy);if(d>=radius)return;const weight=Math.pow(1-d/radius,.65)*decay*(f.mode==='scatter'?SCATTER_TOUCH_SCALE:1),nx=d>.001?dx/d:Math.cos(b.phase),ny=d>.001?dy/d:Math.sin(b.phase),power=f.strength*weight;touchWeight=Math.max(touchWeight,weight);if(f.mode==='scatter'){tax+=nx*power*.95+f.vx*power*.23;tay+=ny*power*.95+f.vy*power*.23}else{tax+=(-dx*6+(f.vx*.6-b.vx)*2.4)*power;tay+=(-dy*6+(f.vy*.6-b.vy)*2.4)*power}}
+if(config.gesture!=='off'){if(pointer.active)affectTouch({x:pointer.x,y:pointer.y,vx:pointer.vx,vy:pointer.vy,radius:interactionRadius(),mode:config.gesture,strength:config.touchStrength},1);for(const f of touchFields){const age=time-f.born,decay=Math.exp(-age*3.8)*(f.kind==='tap'?.7:.18);affectTouch(f,decay)}}b.react=Math.max(b.react,touchWeight);const baseWeight=1-b.react*.84;ax=(ax-sx)*baseWeight+sx*(1+b.react)+tax;ay=(ay-sy)*baseWeight+sy*(1+b.react)+tay;
+const edge=.46/config.zoom;if(Math.abs(b.y)>edge)ay-=(b.y-Math.sign(b.y)*edge)*1.5;const maxAcc=.14+config.speed*.23+b.react*config.touchStrength*1.65,force=Math.hypot(ax,ay);if(force>maxAcc){ax*=maxAcc/force;ay*=maxAcc/force}const response=mix(b.response*(.35+config.delay*.4),.022,b.react),ease=1-Math.exp(-dt/response);b.ax=mix(b.ax,ax,ease);b.ay=mix(b.ay,ay,ease);let vx=b.vx+b.ax*dt,vy=b.vy+b.ay*dt,max=.075+desiredSpeed*2.2+b.react*config.touchStrength*.62,v=Math.hypot(vx,vy);if(v>max){vx*=max/v;vy*=max/v}nextVelocity[i*2]=vx;nextVelocity[i*2+1]=vy}
+for(let i=0;i<birds.length;i++){const b=birds[i];b.prevX=b.x;b.prevY=b.y;b.vx=nextVelocity[i*2];b.vy=nextVelocity[i*2+1];b.x+=b.vx*dt;b.y+=b.vy*dt;const yaw=Math.atan2(b.vy,b.vx),difference=Math.atan2(Math.sin(yaw-b.heading),Math.cos(yaw-b.heading));const turning=dt*(2.5+(b.react||0)*6);b.heading+=clamp(difference,-turning,turning);const effort=clamp(Math.hypot(b.ax,b.ay)*4+Math.hypot(b.vx,b.vy)*2,0,1),gliding=wiggleNoise(time*.27,b.seed+1523)>.25&&effort<.6;b.flapEnvelope=mix(b.flapEnvelope,gliding?.18:.9+effort*.25,1-Math.exp(-dt*3));b.wingPhase+=dt*b.flapRate*(.72+effort*.6)}
+historyHead=(historyHead+1)%HISTORY;for(const o of [...groups,...birds]){o.hx[historyHead]=o.x;o.hy[historyHead]=o.y;o.hvx[historyHead]=o.vx;o.hvy[historyHead]=o.vy}}
+const bgVS='attribute vec2 a;varying vec2 uv;void main(){uv=a*.5+.5;gl_Position=vec4(a,0.,1.);}';
+const bgFS=`precision highp float;varying vec2 uv;uniform vec2 resolution;uniform vec3 skyTop,skyMid,skyBottom;uniform float t,grain;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=noise(p)*a;p=p*2.03+vec2(3.1,1.7);a*=.5;}return v;}
+void main(){vec2 p=vec2(uv.x*resolution.x/resolution.y,uv.y);float cloud=fbm(p*2.+vec2(t*.003,t*.001))-.5;
+vec3 color=uv.y>.5?mix(skyMid,skyTop,smoothstep(.5,1.,uv.y)):mix(skyBottom,skyMid,smoothstep(0.,.5,uv.y));
+float n=hash(gl_FragCoord.xy+floor(t*18.))-.5;gl_FragColor=vec4(clamp(color+cloud*.035+n*grain*.075,0.,1.),1.);}`;
+const birdVS='attribute vec2 a;uniform float aspect,zoom;void main(){gl_Position=vec4(a.x*2./aspect*zoom,a.y*2.*zoom,0.,1.);}';
+const birdFS='precision mediump float;void main(){gl_FragColor=vec4(0.,0.,0.,1.);}';
+// Curved anatomical mesh: swept wings, tapered neck, head, fine bill and fan tail.
+// Wing roots stay attached while the outer joints fold and bank independently.
+function cubic(t,p0,p1,p2,p3){const s=1-t;return{x:s*s*s*p0[0]+3*s*s*t*p1[0]+3*s*t*t*p2[0]+t*t*t*p3[0],y:s*s*s*p0[1]+3*s*s*t*p1[1]+3*s*t*t*p2[1]+t*t*t*p3[1]}}
+function buildBirdMesh(){const mesh=[];function tri(a,b,c,part=0){for(const p of [a,b,c])mesh.push(p.x,p.y,part)}function ellipse(cx,cy,rx,ry,steps){const center={x:cx,y:cy};for(let i=0;i<steps;i++){const a=i/steps*Math.PI*2,z=(i+1)/steps*Math.PI*2;tri(center,{x:cx+Math.cos(a)*rx,y:cy+Math.sin(a)*ry},{x:cx+Math.cos(z)*rx,y:cy+Math.sin(z)*ry})}}
+ellipse(-.06,0,.78,.215,18);
+const neck=[];for(let i=0;i<=9;i++){const t=i/9,p=cubic(t,[.47,-.01],[.84,-.065],[1.06,-.085],[1.40,-.055]),q=cubic(Math.min(1,t+.001),[.47,-.01],[.84,-.065],[1.06,-.085],[1.40,-.055]),dx=q.x-p.x||1,dy=q.y-p.y,len=Math.hypot(dx,dy),width=.095*(1-t)+.039*t;neck.push([{x:p.x-dy/len*width,y:p.y+dx/len*width},{x:p.x+dy/len*width,y:p.y-dx/len*width}])}for(let i=0;i<neck.length-1;i++){tri(neck[i][0],neck[i][1],neck[i+1][0]);tri(neck[i][1],neck[i+1][1],neck[i+1][0])}
+ellipse(1.43,-.055,.173,.097,12);tri({x:1.55,y:-.109},{x:1.82,y:-.046},{x:1.58,y:-.011});
+const tail=[[-.65,-.10],[-1.15,-.175],[-1.2,-.07],[-1.225,0],[-1.2,.07],[-1.15,.175],[-.65,.10]];for(let i=0;i<tail.length;i++)tri({x:-.88,y:0},{x:tail[i][0],y:tail[i][1]},{x:tail[(i+1)%tail.length][0],y:tail[(i+1)%tail.length][1]});
+for(const side of [-1,1]){const sections=[];for(let i=0;i<=14;i++){const t=i/14,front=cubic(t,[.22,.15],[.62,.60],[.24,1.73],[-.74,2.37]),back=cubic(t,[-.48,.16],[-.53,.85],[-.64,1.75],[-.74,2.37]);sections.push([{x:front.x,y:front.y*side},{x:back.x,y:back.y*side}])}for(let i=0;i<sections.length-1;i++){tri(sections[i][0],sections[i][1],sections[i+1][0],side);tri(sections[i][1],sections[i+1][1],sections[i+1][0],side)}for(let i=0;i<5;i++){const t=.62+i*.065,a=cubic(t,[-.48,.16],[-.53,.85],[-.64,1.75],[-.74,2.37]),z=cubic(t+.07,[-.48,.16],[-.53,.85],[-.64,1.75],[-.74,2.37]);tri({x:a.x+.045,y:a.y*side},{x:z.x+.045,y:z.y*side},{x:z.x-.09-i*.007,y:(z.y+.035)*side},side)}}return new Float32Array(mesh)}
+const birdMesh=buildBirdMesh();
+function birdPose(phase,envelope,bank,view){const stroke=Math.sin(phase)*envelope,fold=(.5-.5*Math.cos(phase))*envelope;return{stroke,fold,extension:.92-.31*Math.abs(stroke)-.11*fold,bank,view}}
+function poseVertex(x,y,part,pose,out){if(!part){out.x=x;out.y=y*pose.view;return out}const fraction=clamp((Math.abs(y)-.15)/2.22,0,1),joint=fraction*fraction,lateral=Math.abs(y)*pose.extension*(1+part*pose.bank*.26);out.x=x-joint*pose.fold*.30+joint*pose.stroke*.12;out.y=part*lateral*pose.view+fraction*pose.stroke*(1-pose.view)*.95;return out}
+let bg,bp,bgbuf,buf,data;
+function program(v,f){function compile(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s}const p=gl.createProgram();gl.attachShader(p,compile(gl.VERTEX_SHADER,v));gl.attachShader(p,compile(gl.FRAGMENT_SHADER,f));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));return p}
+function initGL(){bg=program(bgVS,bgFS);bp=program(birdVS,birdFS);bgbuf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,bgbuf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);buf=gl.createBuffer();data=new Float32Array(900*birdMesh.length)}
+function render(){const now=performance.now(),blend=skyReducedMotion.matches?1:1-Math.exp(-Math.min((now-skyLast)/1000,.1)*5);skyLast=now;const targetSky=skyTarget();for(let i=0;i<3;i++)for(let j=0;j<3;j++)liveSky[i][j]+=(targetSky[i][j]-liveSky[i][j])*blend;gl.disable(gl.BLEND);gl.useProgram(bg);gl.bindBuffer(gl.ARRAY_BUFFER,bgbuf);let a=gl.getAttribLocation(bg,'a');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);gl.uniform2f(gl.getUniformLocation(bg,'resolution'),canvas.width,canvas.height);gl.uniform1f(gl.getUniformLocation(bg,'t'),time);gl.uniform1f(gl.getUniformLocation(bg,'grain'),config.grain);skyUniforms(bg);gl.drawArrays(gl.TRIANGLES,0,6);
+let off=0;const posed={x:0,y:0};for(const b of birds){if(Math.abs(b.x)>aspect/(2*config.zoom)+.05||Math.abs(b.y)>.5/config.zoom+.05)continue;const interpolation=paused?1:clamp(accumulator/STEP,0,1),bx=mix(b.prevX,b.x,interpolation),by=mix(b.prevY,b.y,interpolation),cs=Math.cos(b.heading),sn=Math.sin(b.heading),size=.0031*config.size*b.depth,bank=clamp((b.ay*Math.cos(b.heading)-b.ax*Math.sin(b.heading))*4,-.6,.6),view=.75+hash(1,b.seed+183)*.12,pose=birdPose(b.wingPhase,b.flapEnvelope,bank,view);for(let i=0;i<birdMesh.length;i+=3){const p=poseVertex(birdMesh[i],birdMesh[i+1],birdMesh[i+2],pose,posed),x=p.x*size,y=p.y*size;data[off++]=bx+x*cs-y*sn;data[off++]=by+x*sn+y*cs;data[off++]=.7+(b.depth-.65)*.45}}
+gl.useProgram(bp);gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,data.subarray(0,off),gl.DYNAMIC_DRAW);let pos=gl.getAttribLocation(bp,'a');gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,12,0);gl.uniform1f(gl.getUniformLocation(bp,'aspect'),aspect);gl.uniform1f(gl.getUniformLocation(bp,'zoom'),config.zoom);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.drawArrays(gl.TRIANGLES,0,off/3);}
+function frame(now){const elapsed=Math.min((now-last)/1000||STEP,.1);last=now;if(!contextLost){if(!paused){accumulator=Math.min(accumulator+elapsed,STEP*5);while(accumulator>=STEP){update(STEP);accumulator-=STEP}}else accumulator=0;render()}requestAnimationFrame(frame)}
+for(const k of ranges)$(k).addEventListener('input',()=>{config[k]=Number($(k).value);if(k==='count')resetBirds();sync();save()});document.querySelectorAll('[data-preset]').forEach(btn=>btn.addEventListener('click',()=>{config.preset=btn.dataset.preset;const settings={v:{spread:1,cohesion:.58,chaos:.45,speedVar:.5,wiggle:.65,wiggleFreq:.45,delay:.9,breath:.65,flow:.7},flock:{spread:1.15,cohesion:.48,chaos:.7,speedVar:.65,wiggle:.8,wiggleFreq:.6,delay:1.1,breath:.85,flow:.9},ribbon:{spread:1.25,cohesion:.65,chaos:.4,speedVar:.45,wiggle:.55,wiggleFreq:.35,delay:1.4,breath:.55,flow:.8}};Object.assign(config,settings[config.preset]);sync();save()}));$('gesture').addEventListener('change',()=>{config.gesture=$('gesture').value;clearInteraction();save()});$('skyCycle').addEventListener('click',()=>{if(config.skyMode==='mood')config.skyMood=(config.skyMood+1)%SKY_MOODS.length;config.skyMode='mood';sync();save()});for(const id of ['light','dark'])$(id).addEventListener('click',()=>{config.skyMode=id;sync();save()});
+function togglePause(){paused=!paused;sync()}$('pause').onclick=togglePause;$('enter').onclick=()=>{resetBirds(true);paused=false;sync();toast('오른쪽 바깥에서 다시 날아옵니다')};$('reset').onclick=()=>{config={...defaults};paused=false;resetBirds();sync();save()};$('close').onclick=()=>panel(false);$('toggle').onclick=()=>{document.body.classList.remove('clean');panel(document.body.classList.contains('panel-hidden'))};$('view').onclick=()=>{panel(false);document.body.classList.add('clean');toast('화면을 두 번 누르면 조작 패널이 열립니다')};canvas.addEventListener('dblclick',()=>{document.body.classList.remove('clean');panel(true)});
+async function fullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else{panel(false);document.body.classList.add('clean');toast('이 기기에서는 영상만 보기로 전환합니다')}}catch(e){toast('전체화면을 지원하지 않는 브라우저입니다')}}$('fullscreen').onclick=fullscreen;
+function point(e){const r=canvas.getBoundingClientRect();return{x:((e.clientX-r.left)/W-.5)*aspect/config.zoom,y:(.5-(e.clientY-r.top)/H)/config.zoom}}
+function showTouchFeedback(e){if(config.gesture==='off')return;const el=$('touch-feedback'),diameter=Math.min(W,H)*config.touchRadius*.75;el.style.left=e.clientX+'px';el.style.top=e.clientY+'px';el.style.width=diameter+'px';el.style.height=diameter+'px';if(showTouchFeedback.animation)showTouchFeedback.animation.cancel();showTouchFeedback.animation=el.animate?.([{transform:'translate(-50%,-50%) scale(.15)',opacity:.42},{transform:'translate(-50%,-50%) scale(1)',opacity:0}],{duration:800,easing:'ease-out'})}
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);touches.set(e.pointerId,{x:e.clientX,y:e.clientY});if(touches.size>=2){const a=[...touches.values()];pinchDistance=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);pinchZoom=config.zoom;pointer.active=false;pointer.vx=0;pointer.vy=0;touchFields=[];for(const b of birds)b.react=0}else{Object.assign(pointer,point(e));pointer.vx=0;pointer.vy=0;pointer.at=performance.now();pointer.active=true;touchImpulse();showTouchFeedback(e)}});
+canvas.addEventListener('pointermove',e=>{if(!touches.has(e.pointerId))return;touches.set(e.pointerId,{x:e.clientX,y:e.clientY});if(touches.size>=2){const a=[...touches.values()];config.zoom=Math.max(.4,Math.min(2.5,pinchZoom*Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)/Math.max(pinchDistance,1)));sync();pointer.active=false}else movePointer(e)});
+function pointerEnd(e){touches.delete(e.pointerId);pointer.active=false;if(touches.size===0)save()}
+canvas.addEventListener('pointerup',pointerEnd);canvas.addEventListener('pointercancel',()=>clearInteraction());canvas.addEventListener('lostpointercapture',pointerEnd);canvas.addEventListener('wheel',e=>{e.preventDefault();config.zoom=Math.max(.4,Math.min(2.5,config.zoom*Math.exp(-e.deltaY*.001)));sync();save()},{passive:false});window.addEventListener('blur',clearInteraction);document.addEventListener('visibilitychange',()=>{last=performance.now();clearInteraction()});document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;if(e.code==='Space'){e.preventDefault();togglePause()}if(e.key.toLowerCase()==='h'){document.body.classList.remove('clean');panel(document.body.classList.contains('panel-hidden'))}if(e.key.toLowerCase()==='f')fullscreen();if(e.key==='Escape'){document.body.classList.remove('clean');panel(true)}});
+addEventListener('resize',resize);new ResizeObserver(resize).observe(canvas);canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();contextLost=true;toast('화면 복구 중입니다')});canvas.addEventListener('webglcontextrestored',()=>{try{initGL();resize();contextLost=false}catch(e){showError()}});function showError(){const el=$('error');el.style.display='grid';el.textContent='이 브라우저에서 하늘 화면을 열 수 없습니다. 최신 Safari 또는 Chrome에서 다시 열어 주세요.'}
+sync();if(innerWidth<=600)panel(false);const params=new URLSearchParams(location.search);if(params.get('panel')==='0'){panel(false);document.body.classList.add('clean')}if(params.get('theme')==='dark'){config.skyMode='dark';liveSky=skyTarget().map(c=>c.slice());sync()}if(params.get('paused')==='1'){paused=true;sync()}
+if(!gl)showError();else try{initGL();resize();resetBirds();requestAnimationFrame(frame)}catch(e){showError();console.error(e)}
+</script></body></html>
